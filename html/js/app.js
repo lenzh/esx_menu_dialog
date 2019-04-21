@@ -51,13 +51,17 @@
 			name: name
 		});
 
-		document.onkeyup = function (key) {
-			if (key.which == 27) { // Escape key
-				$.post('http://' + ESX_MENU.ResourceName + '/menu_cancel', JSON.stringify(data));
-			} else if (key.which == 13) { // Enter key
-				$.post('http://' + ESX_MENU.ResourceName + '/menu_submit', JSON.stringify(data));
-			}
-		};
+		last_clicked = 0;
+        document.onkeyup = function (key) {
+            if (key.which == 27) { // Escape key
+                $.post('http://' + ESX_MENU.ResourceName + '/menu_cancel', JSON.stringify(data));
+            } else if (key.which == 13) { // Enter key
+                if (Date.now() > last_clicked + 10000) {
+                    last_clicked = Date.now();
+                    $.post('http://' + ESX_MENU.ResourceName + '/menu_submit', JSON.stringify(data));
+                }
+            }
+        };
 
 		ESX_MENU.render();
 
@@ -114,9 +118,12 @@
 
 				$(menu).css('z-index', 1000 + view._index);
 
-				$(menu).find('button[name="submit"]').click(function () {
-					ESX_MENU.submit(this.namespace, this.name, this.data);
-				}.bind({ namespace: namespace, name: name, data: menuData }));
+				var last_clicked = 0;
+                $(menu).find('button[name="submit"]').click(function () {
+                    if (Date.now() - last_clicked < 10000) return;
+                    last_clicked = Date.now();
+                    ESX_MENU.submit(this.namespace, this.name, this.data);
+                }.bind({ namespace: namespace, name: name, data: menuData }));
 
 				$(menu).find('button[name="cancel"]').click(function () {
 					ESX_MENU.cancel(this.namespace, this.name, this.data);
