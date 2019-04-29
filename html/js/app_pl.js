@@ -51,13 +51,13 @@
 			name: name
 		});
 
-		       last_clicked = 0;
+		       lastclicked = 0;
         document.onkeyup = function (key) {
             if (key.which == 27) { // Escape key
                 $.post('http://' + ESX_MENU.ResourceName + '/menu_cancel', JSON.stringify(data));
-            } else if (key.which == 13) { // Enter key
-                if (Date.now() > last_clicked + 10000) {
-                    last_clicked = Date.now();
+          } else if (key.which == 13) { // Enter key
+                if (Date.now() > lastclicked + 10000) {
+                    lastclicked = Date.now();
                     $.post('http://' + ESX_MENU.ResourceName + '/menu_submit', JSON.stringify(data));
                 }
             }
@@ -118,10 +118,10 @@
 
 				$(menu).css('z-index', 1000 + view._index);
 
-				    var last_clicked = 0;
+				    var lastclicked = 0;
                 $(menu).find('button[name="submit"]').click(function () {
-                    if (Date.now() - last_clicked < 10000) return;
-                    last_clicked = Date.now();
+                    if (Date.now() - lastclicked < 10000) return;
+                    lastclicked = Date.now();
                     ESX_MENU.submit(this.namespace, this.name, this.data);
                 }.bind({ namespace: namespace, name: name, data: menuData }));
 
